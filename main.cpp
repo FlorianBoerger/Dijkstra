@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 
     auto par = DijkstraParrallel(filename);
     auto seq = DijkstraSequentiell(filename);
-
+/*
    // Creating parallel Dijkstra-graph
     auto start_read_graph = chrono::high_resolution_clock::now();
     par.readGraph();
@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
     auto end_exec_graph = chrono::high_resolution_clock::now() - start_read_graph;
     long long microseconds_exec_graph = chrono::duration_cast<chrono::microseconds>(end_exec_graph).count();
     cout <<"Creating parallel graph: " << microseconds_exec_graph <<  " us" << endl;
+    */
 
     // Creating Sequentiell Dijkstra-graph
     auto start_read_graph_seq = chrono::high_resolution_clock::now();

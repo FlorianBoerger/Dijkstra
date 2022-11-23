@@ -23,13 +23,13 @@ typedef struct
 {
     unsigned dest;
     unsigned dist;
-} dest_to_dist;
+} dest_to_dist_Par;
 
 class DijkstraParrallel
 {
 public:
     string filename;
-    vector<vector<dest_to_dist>> graph;
+    vector<vector<dest_to_dist_Par>> graph;
     vector<unsigned> dist;
     vector<unsigned> prev;
     vector<bool> mrkd;
@@ -91,7 +91,7 @@ public:
     {
         for(unsigned i = 0; i < graph.size(); i++) {
             int minDistIdx = getMinDist();
-            vector<dest_to_dist> targetNode = graph[minDistIdx];
+            vector<dest_to_dist_Par> targetNode = graph[minDistIdx];
             mrkd[minDistIdx] = true;
             tbb::parallel_for(tbb::blocked_range<size_t>(0, targetNode.size(), 1e4),
                               [this, &targetNode, &minDistIdx](tbb::blocked_range<size_t> &r) {

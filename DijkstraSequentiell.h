@@ -75,15 +75,13 @@ public:
         dist.resize(graph.size());
         prev.resize(graph.size());
         mrkd.resize(graph.size());
-        tbb::parallel_for(tbb::blocked_range<size_t>(0, graph.size()),
-                          [this](tbb::blocked_range<size_t> &r) {
-                              for(size_t i = r.begin(); i != r.end(); i++) {
+                              for(size_t i = 0; i < graph.size(); i++) {
                                   dist[i] = UINT_MAX;
                                   prev[i] = 0;
                                   mrkd[i] = false;
                               }
-                          }
-        );
+
+
         if(dist.size() > 0)
             dist[0] = 0;
     }
@@ -96,21 +94,17 @@ public:
             mrkd[minDistIdx] = true;
 
             for(unsigned i = 0; i < graph.size(); i++)
-            tbb::parallel_for(tbb::blocked_range<size_t>(0, targetNode.size(), 1e4),
-                              [this, &targetNode, &minDistIdx](tbb::blocked_range<size_t> &r) {
-                                  for(size_t j = r.begin(); j != r.end(); j++) {
+                                  for(size_t j = 0; j != targetNode.size(); j++) {
                                       unsigned destIdx = targetNode[j].dest;
                                       unsigned relDist = targetNode[j].dist;
-                                      if(!mrkd[destIdx]) {
+                                      if (!mrkd[destIdx]) {
                                           unsigned absDist = dist[minDistIdx] + relDist;
-                                          if(absDist < dist[destIdx]) {
+                                          if (absDist < dist[destIdx]) {
                                               dist[destIdx] = absDist;
                                               prev[destIdx] = minDistIdx;
                                           }
                                       }
                                   }
-                              }
-            );
         }
     }
 
