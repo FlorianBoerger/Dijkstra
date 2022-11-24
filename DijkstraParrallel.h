@@ -155,7 +155,7 @@ public:
     }
 
 
-    void printHops(unsigned dest)
+    void printHops_Par(unsigned dest)
     {
         vector<unsigned> hops = getHops(dest);
         cout << tag << left << ": " << "1-->" << dest << ": " << dist[dest] << " { ";

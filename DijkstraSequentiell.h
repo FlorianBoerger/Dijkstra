@@ -90,21 +90,19 @@ public:
     {
         for(unsigned i = 0; i < graph.size(); i++) {
             int minDistIdx = getMinDist();
-            vector<dest_to_dist_Seq> targetNode = graph[minDistIdx];
+            std::vector<dest_to_dist_Seq> targetNode = graph[minDistIdx];
             mrkd[minDistIdx] = true;
-
-            for(unsigned i = 0; i < graph.size(); i++)
-                                  for(size_t j = 0; j != targetNode.size(); j++) {
-                                      unsigned destIdx = targetNode[j].dest;
-                                      unsigned relDist = targetNode[j].dist;
-                                      if (!mrkd[destIdx]) {
-                                          unsigned absDist = dist[minDistIdx] + relDist;
-                                          if (absDist < dist[destIdx]) {
-                                              dist[destIdx] = absDist;
-                                              prev[destIdx] = minDistIdx;
-                                          }
-                                      }
-                                  }
+            for(size_t j = 0; j < targetNode.size(); j++) {
+                unsigned destIdx = targetNode[j].dest;
+                unsigned relDist = targetNode[j].dist;
+                if(!mrkd[destIdx]) {
+                    unsigned absDist = dist[minDistIdx] + relDist;
+                    if(absDist < dist[destIdx]) {
+                        dist[destIdx] = absDist;
+                        prev[destIdx] = minDistIdx;
+                    }
+                }
+            }
         }
     }
 
@@ -112,25 +110,10 @@ public:
     {
         unsigned min = UINT_MAX;
         int idx = -1;
-        tbb::concurrent_vector<pair<int, unsigned>> localMins;
-        tbb::parallel_for(tbb::blocked_range<size_t>(0, dist.size(), 1e3),
-                          [this, &localMins](tbb::blocked_range<size_t> &r) {
-                              unsigned _min = UINT_MAX;
-                              int _idx = -1;
-                              for(size_t i = r.begin(); i < r.end(); i++) {
-                                  if(!mrkd[i] && dist[i] < _min) {
-                                      _min = dist[i];
-                                      _idx = i;
-                                  }
-                              }
-                              if(_idx >= 0)
-                                  localMins.push_back(std::make_pair(_idx, _min));
-                          }
-        );
-        for(size_t i = 0; i < localMins.size(); i++) {
-            if(localMins[i].second < min) {
-                min = localMins[i].second;
-                idx = localMins[i].first;
+        for(size_t i = 0; i < dist.size(); i++) {
+            if(!mrkd[i] && dist[i] < min) {
+                min = dist[i];
+                idx = i;
             }
         }
         return idx;
