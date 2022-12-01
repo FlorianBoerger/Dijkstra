@@ -89,15 +89,25 @@ public:
 
     void execGraph()
     {
+        //Für alle Knoten im Graph das folgenden verhalten ausführen
         for(unsigned i = 0; i < graph.size(); i++) {
+            //Als nächstes wird unter den nicht besuchten Knoten nach dem mit der geringsten Distanz zum Knoten 0 gesucht
             int minDistIdx = getMinDist();
+            //Die Daten des jeweiligen Knotens werden in Target Node geladen
             vector<dest_to_dist_Par> targetNode = graph[minDistIdx];
+            //in diesem Vector wurde für jeden Knoten der Wert false hinterlegt. Nach dem Besuch eines Knotens wird dieser hier nun auf True gesetzt.
+            //So können wir wissen das der Knoten schon berücksichtigt wurde
             mrkd[minDistIdx] = true;
+
             tbb::parallel_for(tbb::blocked_range<size_t>(0, targetNode.size(), 1e4),
                               [this, &targetNode, &minDistIdx](tbb::blocked_range<size_t> &r) {
                                   for(size_t j = r.begin(); j != r.end(); j++) {
+                                      //Hier wird für jedes Ziel das von dem ausgewählten Knoten erreicht werden kann der Name des Knotens
+                                      // und die Distanz zu diesem festgelegt
                                       unsigned destIdx = targetNode[j].dest;
                                       unsigned relDist = targetNode[j].dist;
+                                      //Wenn der Knoten noch nicht besucht wurde, wird geprüft ob die absolute Distanz
+                                      //über den gerade betrachteten Knoten kürzer ist als der aktuelle Weg zum Knoten
                                       if(!mrkd[destIdx]) {
                                           unsigned absDist = dist[minDistIdx] + relDist;
                                           if(absDist < dist[destIdx]) {

@@ -88,6 +88,7 @@ public:
 
     void execGraph()
     {
+        //über den ganzen Graph hinweg
         for(unsigned i = 0; i < graph.size(); i++) {
             int minDistIdx = getMinDist();
             std::vector<dest_to_dist_Seq> targetNode = graph[minDistIdx];
